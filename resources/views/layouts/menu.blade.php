@@ -19,35 +19,38 @@
                 </li>
             </ul>
 
-            <form class="d-flex me-3">
+            {{-- <form class="d-flex me-3">
                 <div class="input-group">
                     <input class="form-control border-end-2" type="search" placeholder="Search: jeans, shirts..." aria-label="Search">
                     <button class="btn btn-outline-primary border-start-0" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-            </form>
+            </form> --}}
 
 
             <ul class="navbar-nav">
+                @if (Auth::check())
                 <li class="nav-item">
-                    <i class="bi bi-cart3"></i>
-                </li>
-                <li class="nav-item">
-                    <i class="fas fa-user"></i>
-                </li>
-                <li class="nav-item">
-                    <a class="navbar-brand" href="#">
-                        Login
+                    <a class="nav-link" href="{{ route('profile') }}">
+                        <i class="fas fa-user"></i> {{ Auth::user()->name }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="navbar-brand" href="#">
-                        Register
+                    <a class="nav-link" href="{{ route('do_logout') }}">
+                        <i class="fas fa-user"></i> Logout
                     </a>
                 </li>
+                @else
                 <li class="nav-item">
-                    <a class="navbar-brand" href="#">
+                    <a class="nav-link" href="{{ route('login') }}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('register') }}">Register</a>
+                </li>
+                @endif
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
                         <img src="{{ asset('images/cart1.png') }}" alt="Logo" height="35">Shopping Cart
                     </a>
                 </li>
