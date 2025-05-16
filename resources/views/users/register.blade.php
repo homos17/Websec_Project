@@ -7,7 +7,7 @@
     <div class="card shadow m-4 col-sm-6">
       <div class="card-body">
         <h2 class="text-center mb-3">Create Account</h2>
-        <p class="text-center text-muted mb-4">Register a new account</p>
+        <p class="text-center text-primary mb-4">Register a new account</p>
         <form action="{{ route('do_register') }}" method="post" aria-label="Register form">
           {{ csrf_field() }}
 
@@ -65,7 +65,7 @@
 
           <!-- Social Register Buttons -->
           <div class="form-group text-center mb-3">
-            <span class="text-muted">Or sign up with</span>
+            <span class="text-success">Or sign up with</span>
             <div class="mt-2">
               <a href="{{ route('google.login') }}" class="btn btn-outline-primary mx-1" title="Register with Google">
                 <img src="{{ asset('images/google.png') }}" alt="Google Logo" style="width: 30px; height: 30px;">
@@ -81,7 +81,7 @@
 
           <!-- Login Link -->
           <div class="form-group mt-3 text-center">
-            <span class="text-muted">Already have an account?</span>
+            <span class="text-white">Already have an account?</span>
             <a href="{{ route('login') }}" class="text-sm text-primary text-decoration-underline ms-1">
               Login here
             </a>

@@ -35,5 +35,64 @@ class SocialAuthController extends Controller
         }
     }
 
-    
+    public function redirectToGithub()
+    {
+        return Socialite::driver('github')->redirect();
+    }
+
+    public function handleGithubCallback()
+    {
+        try {
+            $githubUser = Socialite::driver('github')->stateless()->user();
+
+            $user = User::where('email', $githubUser->getEmail())->first();
+
+            if (!$user) {
+                $user = User::create([
+                    'name' => $githubUser->getName() ?? $githubUser->getNickname(),
+                    'email' => $githubUser->getEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt(uniqid()),
+                ]);
+                $user->assignRole('customer');
+            }
+
+            Auth::login($user);
+
+            return redirect('/')->with('success', 'Logged in successfully using GitHub!');
+        } catch (\Exception $e) {
+            return redirect('/login')->withErrors('Unable to login using GitHub.');
+        }
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            $user = User::where('email', $googleUser->getEmail())->first();
+
+            if (!$user) {
+                $user = User::create([
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt(uniqid()),
+                ]);
+                $user->assignRole('customer');
+            }
+
+            Auth::login($user);
+            return redirect('/');
+        } catch (\Exception $e) {
+            return redirect('/login')->withErrors('Unable to login using Google.');
+        }
+    }
+
+
 }
