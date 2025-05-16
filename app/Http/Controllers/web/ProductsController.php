@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 
 class ProductsController extends Controller{
 
@@ -9,15 +10,11 @@ class ProductsController extends Controller{
         return view('products.category');
     }
 
-    public function show_Women(){
-        return view('products.women');
-    }
-    public function show_men(){
-        return view('products.men');
-    }
-    public function show_kids(){
-        return view('products.kids');
-    }
+    public function ListByCategory($category){
+    $products = Product::where('category', $category)->get();
+    return view('products.list', compact('products', 'category'));
+}
+
 
 
 

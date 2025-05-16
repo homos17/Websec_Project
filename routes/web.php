@@ -28,9 +28,7 @@ Route::post('/reset-password', [UsersController::class, 'resetPassword'])->name(
 
 
 Route::get('/category', [ProductsController::class, 'category'])->name('products.category');
-Route::get('/category/women', [ProductsController::class, 'show_Women'])->name('products.women');
-Route::get('/category/men', [ProductsController::class, 'show_men'])->name('products.Men');
-Route::get('/category/kids', [ProductsController::class, 'show_kids'])->name('products.kids');
+Route::get('/category/{category}', [ProductsController::class, 'ListByCategory'])->name('products.byCategory');
 
 
 Route::get('/auth/google/redirect', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');

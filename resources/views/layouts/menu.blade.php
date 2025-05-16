@@ -11,15 +11,15 @@
 
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Men</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Women</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Kids & Baby</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('products.byCategory',['category' => 'men']) }}">Men</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('products.byCategory',['category' => 'women']) }}">Women</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('products.byCategory',['category' => 'kids']) }}">Kids & Baby</a></li>
             </ul>
 
             <ul class="navbar-nav">
                 @auth
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('profile') }}">
+                        <a class="nav-link" href="#">
                             <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
                         </a>
                     </li>

@@ -11,7 +11,7 @@
             <img src="{{ asset('images/women.jpg') }}" class="card-img" alt="Women Category">
             <div class="card-img-overlay d-flex flex-column justify-content-end">
                 <h3 class="card-title text-center fw-bold">Women</h3>
-                <a href="{{ url('/category/women') }}" class="btn btn-outline-light mt-3">Shop Now</a>
+                <a href="{{ route('products.byCategory',['category' => 'women']) }}" class="btn btn-outline-light mt-3">Shop Now</a>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
             <img src="{{ asset('images/men.jpg') }}" class="card-img" alt="Men Category">
             <div class="card-img-overlay d-flex flex-column justify-content-end">
                 <h3 class="card-title text-center fw-bold">Men</h3>
-                <a href="{{ url('/category/men') }}" class="btn btn-outline-light mt-3">Shop Now</a>
+                <a href="{{ route('products.byCategory',['category' => 'men']  ) }}" class="btn btn-outline-light mt-3">Shop Now</a>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
             <img src="{{ asset('images/kids.jpg') }}" class="card-img" alt="Kids Category">
             <div class="card-img-overlay d-flex flex-column justify-content-end">
                 <h3 class="card-title text-center fw-bold">Kids</h3>
-                <a href="{{ url('/category/kids') }}" class="btn btn-outline-light mt-3">Shop Now</a>
+                <a href="{{ route('products.byCategory',['category' => 'kids']) }}" class="btn btn-outline-light mt-3">Shop Now</a>
             </div>
         </div>
     </div>
