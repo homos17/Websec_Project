@@ -11,9 +11,18 @@
 
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ route('products.byCategory',['category' => 'men']) }}">Men</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('products.byCategory',['category' => 'women']) }}">Women</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('products.byCategory',['category' => 'kids']) }}">Kids & Baby</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('products.byCategory',['category' => 'men']) }}">Men</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('products.byCategory',['category' => 'women']) }}">Women</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('products.byCategory',['category' => 'kids']) }}">Kids & Baby</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('products.manage') }}">Manage Products</a>
+                </li>
             </ul>
 
             <ul class="navbar-nav">
