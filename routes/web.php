@@ -26,6 +26,23 @@ Route::post('/forgot-password', [UsersController::class, 'sendResetLink'])->name
 Route::get('/reset-password/{token}', [UsersController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [UsersController::class, 'resetPassword'])->name('password.update');
 
+ // User Listing and Search
+Route::get('/users/list', [UsersController::class, 'list'])->name('users.list');
+
+// User CRUD Operations
+Route::get('/users/create', [UsersController::class, 'createRoll'])->name('users_create');
+Route::get('/users/{user}/edit', [UsersController::class, 'edit'])->name('users_edit');
+Route::post('/users/{user}/save', [UsersController::class, 'save'])->name('users_save');
+Route::delete('/users/{user}/delete', [UsersController::class, 'delete'])->name('users_delete');
+// Password Management
+Route::get('/users/{user}/edit-password', [UsersController::class, 'editPassword'])->name('edit_password');
+Route::post('/users/{user}/save-password', [UsersController::class, 'savePassword'])->name('save_password');
+
+// User Profile
+Route::get('/users/{user}/profile', [UsersController::class, 'profile'])->name('profile');
+
+
+
 //  Products
 Route::get('/category', [ProductsController::class, 'category'])->name('products.category');
 Route::get('/category/{category}', [ProductsController::class, 'ListByCategory'])->name('products.byCategory');

@@ -113,63 +113,201 @@ class UsersController extends Controller
         return view('users.verified', compact('user'));
     }
 
-    public function showForgotForm()
-{
+    public function showForgotForm(){
     return view('auth.forgot-password');
 }
 
-public function sendResetLink(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email|exists:users,email',
-    ]);
+    public function sendResetLink(Request $request){
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
 
-    $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
-    $tokenData = [
-        'id' => $user->id,
-        'email' => $user->email,
-        'timestamp' => now()->timestamp,
-    ];
+        $tokenData = [
+            'id' => $user->id,
+            'email' => $user->email,
+            'timestamp' => now()->timestamp,
+        ];
 
-    $token = Crypt::encryptString(json_encode($tokenData));
-    $resetLink = route('password.reset', ['token' => $token]);
+        $token = Crypt::encryptString(json_encode($tokenData));
+        $resetLink = route('password.reset', ['token' => $token]);
 
-    Mail::to($user->email)->send(new PasswordResetEmail($resetLink));
+        Mail::to($user->email)->send(new PasswordResetEmail($resetLink));
 
-    return back()->with('success', 'We sent a password reset link to your email.');
-}
-
-public function showResetForm($token)
-{
-    try {
-        $data = json_decode(Crypt::decryptString($token), true);
-    } catch (\Exception $e) {
-        return redirect()->route('password.request')->withErrors(['token' => 'Invalid or expired reset link.']);
+        return back()->with('success', 'We sent a password reset link to your email.');
     }
 
-    return view('auth.reset-password', ['token' => $token, 'email' => $data['email']]);
-}
+    public function showResetForm($token){
+        try {
+            $data = json_decode(Crypt::decryptString($token), true);
+        } catch (\Exception $e) {
+            return redirect()->route('password.request')->withErrors(['token' => 'Invalid or expired reset link.']);
+        }
 
-public function resetPassword(Request $request)
-{
-    $request->validate([
-        'token' => 'required',
-        'password' => 'required|min:6|confirmed',
-    ]);
-
-    try {
-        $data = json_decode(Crypt::decryptString($request->token), true);
-    } catch (\Exception $e) {
-        return back()->withErrors(['token' => 'Invalid or expired token.']);
+        return view('auth.reset-password', ['token' => $token, 'email' => $data['email']]);
     }
 
-    $user = User::where('id', $data['id'])->where('email', $data['email'])->firstOrFail();
-    $user->password = Hash::make($request->password);
-    $user->save();
+    public function resetPassword(Request $request){
+        $request->validate([
+            'token' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
 
-    return redirect()->route('login')->with('success', 'Your password has been reset successfully!');
+        try {
+            $data = json_decode(Crypt::decryptString($request->token), true);
+        } catch (\Exception $e) {
+            return back()->withErrors(['token' => 'Invalid or expired token.']);
+        }
+
+        $user = User::where('id', $data['id'])->where('email', $data['email'])->firstOrFail();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('login')->with('success', 'Your password has been reset successfully!');
+    }
+
+    public function list(Request $request){
+        if (!auth()->user()->hasPermissionTo('show_users'))
+            abort(401);
+
+        $query = User::select('*');
+
+        // Apply search filter
+        $query->when($request->keywords, function($q) use ($request) {
+            $q->where(function($query) use ($request) {
+                $query->where('name', 'like', "%{$request->keywords}%")
+                    ->orWhere('email', 'like', "%{$request->keywords}%");
+            });
+        });
+
+        // Apply role filter
+        $query->when($request->role, function($q) use ($request) {
+            $q->whereHas('roles', function($query) use ($request) {
+                $query->where('name', $request->role);
+            });
+        });
+
+        // Get paginated results
+        $users = $query->paginate(10)->withQueryString();
+
+        // Get all roles for the filter dropdown
+        $roles = Role::all();
+
+        return view('users.list', compact('users', 'roles'));
+    }
+
+    public function createRoll(){
+    $roles = Role::all();
+    return view('users.create', compact('roles'));
 }
+
+
+    public function edit(Request $request, User $user = null){
+        $user = $user ?? auth()->user();
+
+
+        $roles = [];
+        foreach (Role::all() as $role) {
+            $role->taken = ($user->hasRole($role->name));
+            $roles[] = $role;
+        }
+
+        $permissions = [];
+        $directPermissionsIds = $user->permissions()->pluck('id')->toArray();
+        foreach (Permission::all() as $permission) {
+            $permission->taken = in_array($permission->id, $directPermissionsIds);
+            $permissions[] = $permission;
+        }
+
+        return view('users.edit', compact('user', 'roles', 'permissions'));
+    }
+
+    public function save(Request $request, User $user){
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'address' => ['nullable', 'string', 'max:1000'],
+            'roles' => ['array'],
+            'permissions' => ['array'],
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'address' => $request->address,
+        ]);
+
+        if (auth()->user()->hasRole('Admin')) {
+            $user->syncRoles($request->roles);
+            $user->syncPermissions($request->permissions);
+        }
+
+        return redirect()->route('profile', ['user' => $user->id])->with('success', 'Profile updated successfully.');
+    }
+
+    public function delete(Request $request, User $user){
+        if (!auth()->user()->hasPermissionTo('delete_users'))
+            abort(401);
+        $user->delete();
+
+        return redirect()->route('users');
+    }
+
+    public function editPassword(Request $request, User $user = null){
+        $user = $user ?? auth()->user();
+        if (auth()->id() != $user?->id) {
+            if (!auth()->user()->hasPermissionTo('edit_users'))
+                abort(401);
+        }
+
+        return view('users.edit_password', compact('user'));
+    }
+
+    public function savePassword(Request $request, User $user){
+        if (auth()->id() == $user?->id) {
+            $this->validate($request, [
+                'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
+            ]);
+
+            if (!Auth::attempt(['email' => $user->email, 'password' => $request->old_password])) {
+                Auth::logout();
+                return redirect('/');
+            }
+        } else if (!auth()->user()->hasPermissionTo('edit_users')) {
+            abort(401);
+        }
+
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return redirect(route('profile', ['user' => $user->id]));
+    }
+
+    public function profile(Request $request, User $user = null){
+        $user = $user ?? auth()->user();
+        if (auth()->id() != $user->id) {
+            if (!auth()->user()->hasPermissionTo('show_users'))
+                abort(401);
+        }
+
+        $permissions = [];
+        foreach ($user->permissions as $permission) {
+            $permissions[] = $permission;
+        }
+        foreach ($user->roles as $role) {
+            foreach ($role->permissions as $permission) {
+                $permissions[] = $permission;
+            }
+        }
+
+        return view('users.profile', compact('user', 'permissions'));
+    }
+
+
+
+
+
 
 
 
