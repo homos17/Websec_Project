@@ -40,6 +40,7 @@
                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-primary">Edit</a>
                     <form action="{{ route('products.delete', $product->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                         @csrf
+                        @method('DELETE')
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </form>
                 </div>

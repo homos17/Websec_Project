@@ -28,8 +28,8 @@
             <div class="mb-3">
                 <h5>Available Sizes:</h5>
                 @foreach ($product->sizes as $size)
-                    <label class="btn btn-outline-dark btn-sm me-1 mb-1">
-                        <input type="radio" name="selected_size" value="{{ $size->id }}" style="display: none;">
+                    <label class="me-2">
+                        <input type="radio" name="selected_size" value="{{ $size->id }}">
                         {{ $size->name }}
                     </label>
                 @endforeach

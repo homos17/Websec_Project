@@ -20,9 +20,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('products.byCategory',['category' => 'kids']) }}">Kids & Baby</a>
                 </li>
+                @can('manage_products')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('products.manage') }}">Manage Products</a>
                 </li>
+                @endcan
             </ul>
 
             <ul class="navbar-nav">
@@ -32,18 +34,21 @@
                             <i class="fas fa-users-cog"></i> User Management
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userManagementDropdown">
+                            @can('manage_users')
                             <li>
                                 <a class="dropdown-item" href="{{ route('users.list') }}">
                                     <i class="fas fa-list"></i> All Users
                                 </a>
                             </li>
+                            @endcan
+                            @can('manage_users')
                             <li>
                                 <a class="dropdown-item" href="{{ route('users_create') }}">
                                     <i class="fas fa-user-plus"></i> Add New User
                                 </a>
                             </li>
-
                             <li><hr class="dropdown-divider"></li>
+                            @endcan
                             <li>
                                 <a class="dropdown-item" href="{{ route('profile', ['user' => Auth::id()]) }}">
                                     <i class="fas fa-user-circle"></i> My Profile

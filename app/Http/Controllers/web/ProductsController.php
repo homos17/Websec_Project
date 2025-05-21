@@ -3,9 +3,21 @@
 namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Color;
+use App\Models\Size;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+
 
 class ProductsController extends Controller{
+    use ValidatesRequests;
+
+    public function ___construct()
+    {
+        $this->middleware('auth:web')->except('list');
+    }
 
     public function category(){
         return view('products.category');
@@ -67,7 +79,7 @@ class ProductsController extends Controller{
 
         $product->colors()->sync($request->colors ?? []);
         $product->sizes()->sync($request->sizes ?? []);
-        
+
         return redirect()->route('products.manage');
 }
 

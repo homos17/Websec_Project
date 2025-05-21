@@ -1,68 +1,74 @@
 @extends('layouts.master')
+
 @section('title', 'User Profile')
+
 @section('content')
-<div class="container-fluid py-4">
-    <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container py-5">
+    {{-- Header Section --}}
+    <div class="d-flex justify-content-between align-items-center mb-5">
         <div>
-            <h1 class="h3 mb-0">User Profile</h1>
-            <p class="text-muted mb-0">View and manage user information</p>
+            <h2 class="mb-2 fw-bold">👤 Profile</h2>
+            <p class="text-info mb-0">User Profile Information</p>
         </div>
-        <div class="d-flex gap-2">
-            <a href="{{ route('users_edit', $user->id) }}" class="btn btn-primary">
-                <i class="fas fa-edit me-1"></i> Edit Profile
+        <div class="d-flex gap-3">
+            <a href="{{ route('users_edit', $user->id) }}" class="btn btn-primary px-4">
+                <i class="bi bi-pencil-square me-2"></i> Edit Profile
             </a>
-            <a href="{{ route('edit_password', $user->id) }}" class="btn btn-warning">
-                <i class="fas fa-key me-1"></i> Change Password
+            <a href="{{ route('edit_password', $user->id) }}" class="btn btn-outline-primary px-4">
+                <i class="bi bi-shield-lock me-2"></i> Change Password
             </a>
         </div>
     </div>
 
+    {{-- Alert Messages --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
-            {{ session('success') }}
+            <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            {{ session('error') }}
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
-    <div class="row">
-        <!-- User Info Card -->
+    <div class="row g-4">
+        {{-- User Info Card --}}
         <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-body text-center">
-                    <h4 class="mb-1">{{ $user->name }}</h4>
-                    <p class="text-muted mb-3">{{ $user->email }}</p>
-                    
-                    <div class="d-flex justify-content-center gap-2 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-4">
+                        <div class="avatar-circle mx-auto mb-3">
+                            <span class="avatar-text">{{ substr($user->name, 0, 1) }}</span>
+                        </div>
+                        <h4 class="fw-bold mb-1">{{ $user->name }}</h4>
+                        <p class="text-secondary  mb-3">{{ $user->email }}</p>
+
                         @if($user->email_verified_at)
-                            <span class="badge bg-success">
-                                <i class="fas fa-check-circle me-1"></i> Verified
+                            <span class="badge bg-success-subtle text-success px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i> Verified Account
                             </span>
                         @else
-                            <span class="badge bg-warning">
-                                <i class="fas fa-clock me-1"></i> Unverified
+                            <span class="badge bg-warning-subtle text-warning px-3 py-2">
+                                <i class="bi bi-clock me-1"></i> Pending Verification
                             </span>
                         @endif
                     </div>
 
-                    <div class="text-muted small">
-                        <div class="mb-1">
-                            <i class="fas fa-calendar-alt me-1"></i>
-                            Joined {{ $user->created_at->format('M d, Y') }}
+                    <hr class="my-4">
+
+                    <div class="text-secondary">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <i class="bi bi-calendar me-2"></i>
+                            <span>Joined {{ $user->created_at->format('M d, Y') }}</span>
                         </div>
                         @if($user->last_login_at)
-                            <div>
-                                <i class="fas fa-sign-in-alt me-1"></i>
-                                Last login {{ $user->last_login_at->diffForHumans() }}
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="bi bi-clock-history me-2"></i>
+                                <span>Last login {{ $user->last_login_at->diffForHumans() }}</span>
                             </div>
                         @endif
                     </div>
@@ -70,57 +76,50 @@
             </div>
         </div>
 
-        <!-- Details Card -->
+        {{-- User Details Card --}}
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title mb-4">
-                        <i class="fas fa-user me-2"></i>User Information
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-4 fw-bold">
+                        <i class="bi bi-person-lines-fill me-2"></i>User Details
                     </h5>
 
-                    <div class="row">
+                    <div class="row g-4">
                         <div class="col-md-6">
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-muted">
-                                    <i class="fas fa-user me-1"></i> Name
-                                </label>
-                                <p class="form-control-plaintext">{{ $user->name }}</p>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-muted">
-                                    <i class="fas fa-envelope me-1"></i> Email
-                                </label>
-                                <p class="form-control-plaintext">{{ $user->email }}</p>
+                            <div class="detail-item">
+                                <label class="form-label text-secondary mb-2">Full Name</label>
+                                <div class="form-control-plaintext text-info fw-medium">{{ $user->name }}</div>
                             </div>
                         </div>
-
                         <div class="col-md-6">
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-muted">
-                                    <i class="fas fa-map-marker-alt me-1"></i> Address
-                                </label>
-                                <p class="form-control-plaintext">{{ $user->address ?? 'Not provided' }}</p>
+                            <div class="detail-item">
+                                <label class="form-label text-secondary mb-2">Email Address</label>
+                                <div class="form-control-plaintext text-info fw-medium">{{ $user->email }}</div>
                             </div>
-
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-muted">
-                                    <i class="fas fa-user-tag me-1"></i> Roles
-                                </label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <label class="form-label text-secondary mb-2">Address</label>
+                                <div class="form-control-plaintext text-info fw-medium">{{ $user->address ?? 'Not specified' }}</div>
+                            </div>
+                        </div>
+                        {{-- <div class="col-md-6">
+                            <div class="detail-item">
+                                <label class="form-label text-secondary mb-2">User Roles</label>
                                 <div>
                                     @foreach($user->roles as $role)
-                                        <span class="badge bg-{{ $role->name === 'admin' ? 'danger' : 'primary' }} me-1">
+                                        <span class="badge bg-{{ $role->name === 'admin' ? 'danger' : 'primary' }}-subtle text-{{ $role->name === 'admin' ? 'danger' : 'primary' }} px-3 py-2 me-2">
                                             {{ ucfirst($role->name) }}
                                         </span>
                                     @endforeach
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
-                    <div class="mt-4">
-                        <a href="{{ route('users.list') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-1"></i> Back to List
+                    <div class="mt-5">
+                        <a href="{{ route('users.list') }}" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-arrow-left me-2"></i> Back to Users List
                         </a>
                     </div>
                 </div>
@@ -129,59 +128,26 @@
     </div>
 </div>
 
-@push('styles')
 <style>
-    .badge {
-        font-weight: 500;
-        padding: 0.5em 0.8em;
-        font-size: 0.875em;
-    }
-    
-    .alert {
-        margin-bottom: 0;
-    }
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #4e73df, #224abe);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .form-control-plaintext {
-        padding: 0.5rem 0;
-        margin-bottom: 0;
-        line-height: 1.5;
-        color: #212529;
-        background-color: transparent;
-        border: solid transparent;
-        border-width: 1px 0;
-        font-size: 1.1rem;
-    }
+.avatar-text {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+}
 
-    .card {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        border: none;
-    }
 
-    .card-title {
-        color: #495057;
-        font-weight: 600;
-    }
 
-    .text-muted {
-        color: #6c757d !important;
-    }
-</style>
-@endpush
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-dismiss alerts after 5 seconds
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(function(alert) {
-        setTimeout(function() {
-            const closeButton = alert.querySelector('.btn-close');
-            if (closeButton) {
-                closeButton.click();
-            }
-        }, 5000);
-    });
-});
-</script>
-@endpush
+.form-control-plaintext {
+    padding: 0.5rem 0;
+}
 @endsection

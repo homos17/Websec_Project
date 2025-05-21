@@ -7,7 +7,7 @@
     <div class="card shadow m-4 col-sm-6">
       <div class="card-body">
         <h2 class="text-center mb-3">Change Password</h2>
-        <p class="text-center text-muted mb-4">Update your password</p>
+        <p class="text-center text-secondary mb-4">Update your password</p>
         <form action="{{ route('save_password', $user->id) }}" method="post" aria-label="Edit password form">
           {{ csrf_field() }}
 

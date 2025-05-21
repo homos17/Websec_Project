@@ -21,6 +21,11 @@ class UsersController extends Controller
 {
     use ValidatesRequests;
 
+    public function ___construct()
+    {
+        $this->middleware('auth:web')->except('register');
+    }
+
 
 
     public function register(Request $request)
@@ -251,7 +256,7 @@ class UsersController extends Controller
             abort(401);
         $user->delete();
 
-        return redirect()->route('users');
+        return redirect()->route('users.list')->with('success', 'User deleted successfully.');
     }
 
     public function editPassword(Request $request, User $user = null){
