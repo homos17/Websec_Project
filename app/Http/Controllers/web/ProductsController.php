@@ -16,7 +16,7 @@ class ProductsController extends Controller{
 
     public function ___construct()
     {
-        $this->middleware('auth:web')->except('list');
+        $this->middleware('auth:web')->except(['list', 'category', 'ListByCategory', 'productDetails']);
     }
 
     public function category(){
@@ -24,19 +24,18 @@ class ProductsController extends Controller{
     }
 
     public function ListByCategory($category , Request $request){
-    $query = Product::where('category', $category);
-    $query->when($request->keywords,
-        fn($q)=> $q->where("name","like","%$request->keywords%"));
-    $query->when($request->min_price,
-        fn($q)=> $q->where("price", ">=", $request->min_price));
-    $query->when($request->max_price,
-        fn($q)=> $q->where("price", "<=", $request->max_price));
-    $query->when($request->order_by,
-        fn($q)=> $q->orderBy($request->order_by, $request->order_direction ?? "ASC"));
-    $products = $query->get();
-    return view('products.list', compact('products', 'category'));
-}
-
+        $query = Product::where('category', $category);
+        $query->when($request->keywords,
+            fn($q)=> $q->where("name","like","%$request->keywords%"));
+        $query->when($request->min_price,
+            fn($q)=> $q->where("price", ">=", $request->min_price));
+        $query->when($request->max_price,
+            fn($q)=> $q->where("price", "<=", $request->max_price));
+        $query->when($request->order_by,
+            fn($q)=> $q->orderBy($request->order_by, $request->order_direction ?? "ASC"));
+        $products = $query->get();
+        return view('products.list', compact('products', 'category'));
+    }
 
     public function productDetails($id){
         $product = Product::find($id);
@@ -44,7 +43,7 @@ class ProductsController extends Controller{
             return redirect()->back()->with('error', 'Product not found.');
         }
         return view('products.details', compact('product'));
-}
+    }
 
     public function manage() {
         if(!auth()->user()) return redirect('login');
@@ -59,36 +58,31 @@ class ProductsController extends Controller{
         $colors = Color::all();
         $sizes = Size::all();
         return view("products.edit", compact('product', 'colors', 'sizes'));
-        }
+    }
 
     public function save(Request $request, Product $product = null) {
-
         $this->validate($request, [
             'code' => ['required', 'string', 'max:32'],
-	        'name' => ['required', 'string', 'max:128'],
-	        'description' => ['required', 'string', 'max:1024'],
-	        'price' => ['required', 'numeric'],
+            'name' => ['required', 'string', 'max:128'],
+            'description' => ['required', 'string', 'max:1024'],
+            'price' => ['required', 'numeric'],
             'category' => ['required', 'string', 'max:128'],
             'quantity' => ['required','integer','min:0']
-	    ]);
+        ]);
 
-
-		$product = $product??new Product();
-		$product->fill($request->all());
-		$product->save();
+        $product = $product??new Product();
+        $product->fill($request->all());
+        $product->save();
 
         $product->colors()->sync($request->colors ?? []);
         $product->sizes()->sync($request->sizes ?? []);
 
         return redirect()->route('products.manage');
-}
+    }
 
-
-public function delete(Request $request, Product $product) {
-    if(!auth()->user()) return redirect('login');
+    public function delete(Request $request, Product $product) {
+        if(!auth()->user()) return redirect('login');
         $product->delete();
         return redirect()->route('products.manage');
     }
-
-
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\SocialAuthController;
 use App\Http\Controllers\Web\ProductsController;
+use App\Http\Controllers\Web\CartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -61,6 +62,13 @@ Route::get('auth/facebook', [SocialAuthController::class, 'redirectToFacebook'])
 Route::get('auth/facebook/callback', [SocialAuthController::class, 'handleFacebookCallback']);
 Route::get('/auth/github/redirect', [SocialAuthController::class, 'redirectToGithub'])->name('github.redirect');
 Route::get('/auth/github/callback', [SocialAuthController::class, 'handleGithubCallback']);
+
+// Cart Routes
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/update/{cart}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/remove/{cart}', [CartController::class, 'remove'])->name('cart.remove');
+Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 
 

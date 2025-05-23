@@ -76,7 +76,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('register') }}"><i class="bi bi-person-plus"></i> Register</a></li>
                 @endauth
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{ route('cart.index') }}">
                         <i class="bi bi-bag"></i> Cart
                     </a>
                 </li>

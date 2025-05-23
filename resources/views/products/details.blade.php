@@ -13,33 +13,54 @@
             <p class="text-warning">${{ $product->price }}</p>
             <p>{{ $product->description }}</p>
 
-            {{-- Colors --}}
-            <div class="mb-3">
-                <h5>Available Colors:</h5>
-                @foreach ($product->colors as $color)
-                    <label class="me-2">
-                        <input type="radio" name="selected_color" value="{{ $color->id }}">
-                        <span style="display:inline-block;width:20px;height:20px;background-color:{{ $color->hex_code }};border-radius:50%;border:1px solid #ccc;"></span>
-                    </label>
-                @endforeach
-            </div>
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-            {{-- Sizes --}}
-            <div class="mb-3">
-                <h5>Available Sizes:</h5>
-                @foreach ($product->sizes as $size)
-                    <label class="me-2">
-                        <input type="radio" name="selected_size" value="{{ $size->id }}">
-                        {{ $size->name }}
-                    </label>
-                @endforeach
-            </div>
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
 
-            {{-- Add to Cart button --}}
-            <form >
+            <form action="{{ route('cart.add', $product->id) }}" method="POST">
                 @csrf
-                <input type="hidden" name="color_id" id="colorInput">
-                <input type="hidden" name="size_id" id="sizeInput">
+                
+                {{-- Quantity --}}
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity:</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ $product->quantity }}" required>
+                </div>
+
+                {{-- Colors --}}
+                <div class="mb-3">
+                    <h5>Available Colors:</h5>
+                    @foreach ($product->colors as $color)
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="color_id" id="color{{ $color->id }}" value="{{ $color->id }}" required>
+                            <label class="form-check-label" for="color{{ $color->id }}">
+                                <span style="display:inline-block;width:20px;height:20px;background-color:{{ $color->hex_code }};border-radius:50%;border:1px solid #ccc;margin-right:5px;"></span>
+                                {{ $color->name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+
+                {{-- Sizes --}}
+                <div class="mb-3">
+                    <h5>Available Sizes:</h5>
+                    @foreach ($product->sizes as $size)
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="size_id" id="size{{ $size->id }}" value="{{ $size->id }}" required>
+                            <label class="form-check-label" for="size{{ $size->id }}">
+                                {{ $size->name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+
                 <button type="submit" class="btn btn-dark mt-2">Add to Cart</button>
             </form>
 
@@ -47,19 +68,4 @@
         </div>
     </div>
 </div>
-
-{{-- JS to handle selected values --}}
-<script>
-    document.querySelectorAll('input[name="selected_color"]').forEach(input => {
-        input.addEventListener('change', function () {
-            document.getElementById('colorInput').value = this.value;
-        });
-    });
-
-    document.querySelectorAll('input[name="selected_size"]').forEach(input => {
-        input.addEventListener('change', function () {
-            document.getElementById('sizeInput').value = this.value;
-        });
-    });
-</script>
 @endsection
