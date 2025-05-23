@@ -90,7 +90,7 @@
                             </button>
                         </form>
                         <a href="{{ route('products.category') }}" class="btn btn-secondary">Continue Shopping</a>
-                        <a href="#" class="btn btn-primary">Proceed to Checkout</a>
+                        <a href="{{ route('checkout.index') }}" class="btn btn-primary">Proceed to Checkout</a>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\SocialAuthController;
 use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\CartController;
+use App\Http\Controllers\Web\CheckoutController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -63,12 +64,19 @@ Route::get('auth/facebook/callback', [SocialAuthController::class, 'handleFacebo
 Route::get('/auth/github/redirect', [SocialAuthController::class, 'redirectToGithub'])->name('github.redirect');
 Route::get('/auth/github/callback', [SocialAuthController::class, 'handleGithubCallback']);
 
-// Cart Routes
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-Route::patch('/cart/update/{cart}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/remove/{cart}', [CartController::class, 'remove'])->name('cart.remove');
-Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+// Cart routes
+Route::middleware(['auth:web'])->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart/update/{cart}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/remove/{cart}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+    // Checkout routes
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout.index');
+    Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
+    Route::get('/checkout/success', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
+});
 
 
 
