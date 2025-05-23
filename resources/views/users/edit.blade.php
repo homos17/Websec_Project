@@ -94,10 +94,12 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 gap-2">
+
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-save me-1"></i> Save Changes
                     </button>
-                    <a href="{{ route('profile', $user->id) }}" class="btn btn-outline-light">
+
+                    <a href="{{ route('users.list', $user->id) }}" class="btn btn-outline-light">
                         <i class="bi bi-x-circle me-1"></i> Cancel
                     </a>
                 </div>

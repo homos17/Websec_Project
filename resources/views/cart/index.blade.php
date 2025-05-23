@@ -41,7 +41,7 @@
                                             <img src="{{ asset('images/' . $item->product->photo) }}" alt="{{ $item->product->name }}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
                                             <div class="ms-3">
                                                 <h6 class="mb-0">{{ $item->product->name }}</h6>
-                                                <small class="text-muted">Stock: {{ $item->product->quantity }}</small>
+                                                <small class="text-secondary">Stock: {{ $item->product->quantity }}</small>
                                             </div>
                                         </div>
                                     </td>
@@ -99,10 +99,10 @@
         <div class="card bg-dark">
             <div class="card-body text-center">
                 <h3>Your cart is empty</h3>
-                <p class="text-muted">Looks like you haven't added any items to your cart yet.</p>
+                <p class="text-secondary">Looks like you haven't added any items to your cart yet.</p>
                 <a href="{{ route('products.category') }}" class="btn btn-primary">Start Shopping</a>
             </div>
         </div>
     @endif
 </div>
-@endsection 
+@endsection

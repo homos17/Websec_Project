@@ -14,7 +14,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="mb-0">Order #{{ $order->id }}</h5>
-                        <small class="text-muted">Placed on {{ $order->created_at->format('F j, Y') }}</small>
+                        <small class="text-secondary">Placed on {{ $order->created_at->format('F j, Y') }}</small>
                     </div>
                     <span class="badge bg-{{ $order->status === 'pending' ? 'warning' : ($order->status === 'completed' ? 'success' : 'info') }}">
                         {{ ucfirst($order->status) }}
@@ -24,7 +24,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <strong>Shipping Address:</strong>
-                            <p class="mb-0">{{ $order->shipping_address }}</p>
+                            <p class="mb-0" >{{ $order->shipping_address }}</p>
                         </div>
                         <div class="col-md-6">
                             <strong>Payment Method:</strong>
@@ -70,4 +70,4 @@
         @endforeach
     @endif
 </div>
-@endsection 
+@endsection

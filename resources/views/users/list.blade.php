@@ -170,6 +170,7 @@
                                           method="POST"
                                           class="d-inline delete-user-form">
                                         @csrf
+                                        @method('DELETE')
                                         <button type="submit"
                                                 class="btn btn-sm btn-danger px-3"
                                                 title="Delete User"

@@ -11,59 +11,80 @@
 
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto">
+                {{-- @can(view_products) --}}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('products.byCategory',['category' => 'men']) }}">Men</a>
                 </li>
+                {{-- @endcan --}}
+                {{-- @can(view_products) --}}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('products.byCategory',['category' => 'women']) }}">Women</a>
                 </li>
+                {{-- @endcan --}}
+                {{-- @can(view_products) --}}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('products.byCategory',['category' => 'kids']) }}">Kids & Baby</a>
                 </li>
+                {{-- @endcan --}}
                 @can('manage_products')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('products.manage') }}">Manage Products</a>
+                </li>
+                @endcan
+                @can('mange_Orders')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('orders.admin') }}">
+                        <i class="bi bi-bag"></i> Manage Orders
+                    </a>
                 </li>
                 @endcan
             </ul>
 
             <ul class="navbar-nav">
                 @auth
+                    @can('Complaints')
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-headset"></i> Complaints
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="supportDropdown">
+                            @can('show_Complaints')
                             <li>
                                 <a class="dropdown-item" href="{{ route('support.list') }}">
                                     <i class="fas fa-ticket-alt"></i> My Complaints
                                 </a>
                             </li>
+                            @endcan
+                            @can('add_Complaints')
                             <li>
                                 <a class="dropdown-item" href="{{ route('support.add') }}">
                                     <i class="fas fa-plus-circle"></i> Create New Complaint
                                 </a>
                             </li>
+                            @endcan()
+                            @can('admin_Complaints')
                             <li>
                                 <a class="dropdown-item" href="{{ route('admin.support.index') }}">
                                     <i class="fas fa-plus-circle"></i> Admin Complaints
                                 </a>
                             </li>
+                            @endcan
                         </ul>
                     </li>
+                    @endcan
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-users-cog"></i> User Management
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userManagementDropdown">
-                            @can('admin_users')
+                            @can('view_users')
                             <li>
                                 <a class="dropdown-item" href="{{ route('users.list') }}">
                                     <i class="fas fa-list"></i> All Users
                                 </a>
                             </li>
                             @endcan
-                            @can('admin_users')
+                            @can('add_users')
                             <li>
                                 <a class="dropdown-item" href="{{ route('users_create') }}">
                                     <i class="fas fa-user-plus"></i> Add New User

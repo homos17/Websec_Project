@@ -177,6 +177,7 @@ class CartController extends Controller
     {
         return view('checkout.success');
     }
+############################################################################################################################
 
     public function orders()
     {
@@ -214,15 +215,15 @@ class CartController extends Controller
     {
         // Clear the cart first
         Cart::where('user_id', Auth::id())->delete();
-        
+
         // Add the product to cart with quantity 1
         Cart::create([
             'user_id' => Auth::id(),
             'product_id' => $product->id,
             'quantity' => 1
         ]);
-        
+
         // Redirect to cart page
         return redirect()->route('cart.index')->with('success', 'Product added to cart!');
     }
-} 
+}

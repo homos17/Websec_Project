@@ -171,9 +171,10 @@ class UsersController extends Controller
 
         return redirect()->route('login')->with('success', 'Your password has been reset successfully!');
     }
+############################################################################################################
 
     public function list(Request $request){
-        if (!auth()->user()->hasPermissionTo('show_users'))
+        if (!auth()->user()->hasPermissionTo('view_users'))
             abort(401);
 
         $query = User::select('*');
@@ -208,8 +209,13 @@ class UsersController extends Controller
 }
 
 
+
+
     public function edit(Request $request, User $user = null){
         $user = $user ?? auth()->user();
+        if(auth()->id()!=$user?->id) {
+            if(!auth()->user()->hasPermissionTo('edit_users')) abort(401);
+        }
 
 
         $roles = [];
@@ -228,7 +234,12 @@ class UsersController extends Controller
         return view('users.edit', compact('user', 'roles', 'permissions'));
     }
 
+
     public function save(Request $request, User $user){
+        if(auth()->id()!=$user->id) {
+            if(!auth()->user()->hasPermissionTo('view_users')) abort(401);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
@@ -262,7 +273,7 @@ class UsersController extends Controller
     public function editPassword(Request $request, User $user = null){
         $user = $user ?? auth()->user();
         if (auth()->id() != $user?->id) {
-            if (!auth()->user()->hasPermissionTo('edit_users'))
+            if (!auth()->user()->hasPermissionTo('change_password'))
                 abort(401);
         }
 
@@ -292,7 +303,7 @@ class UsersController extends Controller
     public function profile(Request $request, User $user = null){
         $user = $user ?? auth()->user();
         if (auth()->id() != $user->id) {
-            if (!auth()->user()->hasPermissionTo('show_users'))
+            if (!auth()->user()->hasPermissionTo('view_users'))
                 abort(401);
         }
 

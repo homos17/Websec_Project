@@ -8,8 +8,8 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3>Complaint #{{ $ticket->id }}</h3>
-                    <a href="{{ route('admin.support.index') }}" class="btn btn-secondary">Back to Complaints</a>
+                    <h3>Support Ticket</h3>
+                    <a href="{{ route('support.list') }}" class="btn btn-secondary">Back to Tickets</a>
                 </div>
 
                 <div class="card-body">
@@ -20,11 +20,10 @@
                     @endif
 
                     <div class="mb-4">
-                        <h4>Complaint Details</h4>
-                        <p><strong>User:</strong> {{ $ticket->user->name }}</p>
+                        <h4>Ticket Details</h4>
                         <p><strong>Subject:</strong> {{ $ticket->subject }}</p>
                         <p><strong>Status:</strong>
-                            <span class="badge bg-{{ $ticket->status === 'sent' ? 'danger' : ($ticket->status === 'in_progress' ? 'warning' : 'success') }}">
+                            <span class="badge bg-{{ $ticket->status === 'open' ? 'danger' : ($ticket->status === 'in_progress' ? 'warning' : 'success') }}">
                                 {{ ucfirst($ticket->status) }}
                             </span>
                         </p>
@@ -32,7 +31,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <h4>User's Message</h4>
+                        <h4>Your Message</h4>
                         <div class="p-3 bg-light rounded">
                             {{ $ticket->message }}
                         </div>
@@ -40,39 +39,15 @@
 
                     @if($ticket->admin_reply)
                         <div class="mb-4">
-                            <h4>Previous Response</h4>
+                            <h4>Support Response</h4>
                             <div class="p-3 bg-light rounded">
                                 {{ $ticket->admin_reply }}
                             </div>
-                            <small class="text-muted">Replied by: {{ $ticket->admin->name ?? 'Support Team' }}</small>
-                        </div>
-                    @endif
-
-                    @if($ticket->status !== 'done')
-                        <div class="mb-4">
-                            <h4>Reply to Complaint</h4>
-                            <form method="POST" action="{{ route('admin.support.reply', $ticket) }}" class="mb-3">
-                                @csrf
-                                <div class="mb-3">
-                                    <textarea class="form-control @error('reply_complaint') is-invalid @enderror"
-                                        name="reply_complaint" rows="4" required>{{ old('reply_complaint', $ticket->reply_complaint) }}</textarea>
-                                    @error('reply_complaint')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <button type="submit" class="btn btn-primary">Send Reply</button>
-                            </form>
-
-                            <form method="POST" action="{{ route('admin.support.close', $ticket) }}" class="mt-3">
-                                @csrf
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to close this complaint?')">
-                                    Close Complaint
-                                </button>
-                            </form>
+                            <small class="text-secondary">Replied by: {{ $ticket->admin->name ?? 'Support Team' }}</small>
                         </div>
                     @else
                         <div class="alert alert-info">
-                            This complaint has been closed.
+                            Waiting for support team response...
                         </div>
                     @endif
                 </div>

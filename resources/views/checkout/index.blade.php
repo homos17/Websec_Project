@@ -20,12 +20,12 @@
                     <div class="space-y-4">
                         @foreach($cartItems as $item)
                             <div class="d-flex align-items-center mb-3">
-                                <img src="{{ asset('images/' . $item->product->photo) }}" 
-                                     alt="{{ $item->product->name }}" 
+                                <img src="{{ asset('images/' . $item->product->photo) }}"
+                                     alt="{{ $item->product->name }}"
                                      class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
                                 <div>
                                     <h6 class="mb-1">{{ $item->product->name }}</h6>
-                                    <p class="text-muted mb-1">
+                                    <p class="text-secondary mb-1">
                                         Quantity: {{ $item->quantity }}
                                         @if($item->color)
                                             | Color: {{ $item->color->name }}
@@ -56,11 +56,11 @@
                     <h2 class="card-title mb-4">Shipping & Payment</h2>
                     <form action="{{ route('checkout.process') }}" method="POST">
                         @csrf
-                        
+
                         <!-- Shipping Address -->
                         <div class="mb-3">
                             <label for="shipping_address" class="form-label">Shipping Address</label>
-                            <textarea name="shipping_address" id="shipping_address" rows="3" 
+                            <textarea name="shipping_address" id="shipping_address" rows="3"
                                       class="form-control bg-dark text-white"
                                       required></textarea>
                             @error('shipping_address')
@@ -72,17 +72,17 @@
                         <div class="mb-4">
                             <label class="form-label">Payment Method</label>
                             <div class="form-check">
-                                <input type="radio" name="payment_method" value="credit_card" 
+                                <input type="radio" name="payment_method" value="credit_card"
                                        class="form-check-input" required>
                                 <label class="form-check-label">Credit Card</label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" name="payment_method" value="paypal" 
+                                <input type="radio" name="payment_method" value="paypal"
                                        class="form-check-input">
                                 <label class="form-check-label">PayPal</label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" name="payment_method" value="paypal" 
+                                <input type="radio" name="payment_method" value="paypal"
                                        class="form-check-input">
                                 <label class="form-check-label">Cash on Delivery</label>
                             </div>
@@ -100,4 +100,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

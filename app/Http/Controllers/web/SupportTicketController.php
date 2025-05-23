@@ -18,6 +18,10 @@ class SupportTicketController extends Controller{
     }
 
     public function list(){
+        if(auth()->id()!=$user?->id) {
+            if(!auth()->user()->hasPermissionTo('Complaints')) abort(401);
+        }
+
         $tickets = SupportTicket::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
@@ -26,6 +30,10 @@ class SupportTicketController extends Controller{
     }
 
     public function add(){
+        if(auth()->id()!=$user?->id) {
+            if(!auth()->user()->hasPermissionTo('add_Complaints')) abort(401);
+        }
+
         return view('support.add');
     }
 

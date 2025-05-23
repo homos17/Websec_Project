@@ -34,6 +34,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    
                                     @foreach($tickets as $ticket)
                                         <tr>
                                             <td>{{ $ticket->subject }}</td>

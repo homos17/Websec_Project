@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="mb-2 fw-bold">📦 Manage Orders</h2>
-            <p class="text-muted mb-0">View and manage all customer orders</p>
+            <p class="text-secondary mb-0">View and manage all customer orders</p>
         </div>
     </div>
 
@@ -31,7 +31,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <h5 class="card-title mb-1">Order #{{ $order->id }}</h5>
-                                    <p class="text-muted small mb-0">{{ $order->created_at->format('M d, Y h:i A') }}</p>
+                                    <p class="text-secondary small mb-0">{{ $order->created_at->format('M d, Y h:i A') }}</p>
                                 </div>
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -88,19 +88,19 @@
                                 </div>
                                 <div>
                                     <div class="fw-medium">{{ $order->user->name }}</div>
-                                    <small class="text-muted">{{ $order->user->email }}</small>
+                                    <small class="text-secondary">{{ $order->user->email }}</small>
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Items:</span>
+                                    <span class="text-secondary">Items:</span>
                                     <span class="badge bg-primary-subtle text-primary">
                                         {{ $order->items->count() }} items
                                     </span>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <span class="text-muted">Total Amount:</span>
+                                    <span class="text-secondary">Total Amount:</span>
                                     <span class="fw-medium">${{ number_format($order->total_amount, 2) }}</span>
                                 </div>
                             </div>
@@ -132,7 +132,7 @@
                                         <h6 class="mb-2">Order Information</h6>
                                         <p class="mb-1"><strong>Date:</strong> {{ $order->created_at->format('M d, Y h:i A') }}</p>
                                         <p class="mb-1"><strong>Payment Method:</strong> {{ ucfirst($order->payment_method) }}</p>
-                                        <p class="mb-0"><strong>Status:</strong> 
+                                        <p class="mb-0"><strong>Status:</strong>
                                             <span class="badge bg-{{ $order->status === 'pending' ? 'warning' : ($order->status === 'completed' ? 'success' : 'info') }}-subtle text-{{ $order->status === 'pending' ? 'warning' : ($order->status === 'completed' ? 'success' : 'info') }}">
                                                 {{ ucfirst($order->status) }}
                                             </span>
@@ -221,4 +221,4 @@
     color: white;
 }
 </style>
-@endsection 
+@endsection

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\SocialAuthController;
+use App\Http\Controllers\Web\SupportTicketController;
 use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
@@ -75,7 +76,14 @@ Route::middleware(['auth:web'])->group(function () {
     // Checkout routes
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout.index');
     Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
+    Route::post('/checkout/buy-now/{product}', [CartController::class, 'buyNow'])->name('checkout.buy-now');
     Route::get('/checkout/success', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
+
+        // Orders route
+    Route::get('/orders', [CartController::class, 'orders'])->name('orders.index');
+    Route::get('/admin/orders', [CartController::class, 'adminOrders'])->name('orders.admin');
+    Route::patch('/orders/{order}/update-status', [CartController::class, 'updateStatus'])->name('orders.update-status');
+
 });
 
 
