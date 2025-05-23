@@ -39,11 +39,11 @@ class SupportTicketController extends Controller{
             'user_id' => Auth::id(),
             'subject' => $request->subject,
             'message' => $request->message,
-            'status' => 'open'
+            'status' => 'sent'
         ]);
 
         return redirect()->route('support.list')
-            ->with('success', 'Support ticket created successfully!');
+            ->with('success', 'Complaint created successfully!');
     }
 
 }

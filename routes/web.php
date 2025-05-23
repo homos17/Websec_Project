@@ -75,14 +75,19 @@ Route::middleware(['auth:web'])->group(function () {
     // Checkout routes
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout.index');
     Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
-    Route::post('/checkout/buy-now/{product}', [CartController::class, 'buyNow'])->name('checkout.buy-now');
     Route::get('/checkout/success', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
-    
-    // Orders route
-    Route::get('/orders', [CartController::class, 'orders'])->name('orders.index');
-    Route::get('/admin/orders', [CartController::class, 'adminOrders'])->name('orders.admin');
-    Route::patch('/orders/{order}/update-status', [CartController::class, 'updateStatus'])->name('orders.update-status');
 });
 
+
+Route::get('/support', [App\Http\Controllers\Web\SupportTicketController::class, 'list'])->name('support.list');
+Route::get('/support/add', [App\Http\Controllers\Web\SupportTicketController::class, 'add'])->name('support.add');
+Route::post('/support', [App\Http\Controllers\Web\SupportTicketController::class, 'store'])->name('support.store');
+Route::get('/support/{ticket}', [App\Http\Controllers\Web\SupportTicketController::class, 'show'])->name('support.show');
+
+// Admin Support Ticket Routes
+Route::get('/admin/support', [App\Http\Controllers\Web\AdminSupportTicketController::class, 'index'])->name('admin.support.index');
+Route::get('/admin/support/{ticket}', [App\Http\Controllers\Web\AdminSupportTicketController::class, 'show'])->name('admin.support.show');
+Route::post('/admin/support/{ticket}/reply', [App\Http\Controllers\Web\AdminSupportTicketController::class, 'reply'])->name('admin.support.reply');
+Route::post('/admin/support/{ticket}/close', [App\Http\Controllers\Web\AdminSupportTicketController::class, 'close'])->name('admin.support.close');
 
 

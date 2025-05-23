@@ -51,23 +51,24 @@
                     @if($ticket->status !== 'done')
                         <div class="mb-4">
                             <h4>Reply to Complaint</h4>
-                            <form method="POST" action="{{ route('admin.support.reply', $ticket) }}" class="mb-3">
+                            <form method="POST" action="{{ route('admin.support.reply', $ticket) }}">
                                 @csrf
                                 <div class="mb-3">
-                                    <textarea class="form-control @error('reply_complaint') is-invalid @enderror"
-                                        name="reply_complaint" rows="4" required>{{ old('reply_complaint', $ticket->reply_complaint) }}</textarea>
-                                    @error('reply_complaint')
+                                    <textarea class="form-control @error('admin_reply') is-invalid @enderror"
+                                        name="admin_reply" rows="4" required>{{ old('admin_reply', $ticket->admin_reply) }}</textarea>
+                                    @error('admin_reply')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <button type="submit" class="btn btn-primary">Send Reply</button>
-                            </form>
-
-                            <form method="POST" action="{{ route('admin.support.close', $ticket) }}" class="mt-3">
-                                @csrf
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to close this complaint?')">
-                                    Close Complaint
-                                </button>
+                                <div class="d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-primary">Send Reply</button>
+                                    <form method="POST" action="{{ route('admin.support.close', $ticket) }}" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to close this complaint?')">
+                                            Close Complaint
+                                        </button>
+                                    </form>
+                                </div>
                             </form>
                         </div>
                     @else
