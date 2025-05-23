@@ -30,18 +30,35 @@
             <ul class="navbar-nav">
                 @auth
                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-headset"></i> Support
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="supportDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('support.list') }}">
+                                    <i class="fas fa-ticket-alt"></i> My Tickets
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('support.add') }}">
+                                    <i class="fas fa-plus-circle"></i> Create New Ticket
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-users-cog"></i> User Management
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userManagementDropdown">
-                            @can('manage_users')
+                            @can('admin_users')
                             <li>
                                 <a class="dropdown-item" href="{{ route('users.list') }}">
                                     <i class="fas fa-list"></i> All Users
                                 </a>
                             </li>
                             @endcan
-                            @can('manage_users')
+                            @can('admin_users')
                             <li>
                                 <a class="dropdown-item" href="{{ route('users_create') }}">
                                     <i class="fas fa-user-plus"></i> Add New User
