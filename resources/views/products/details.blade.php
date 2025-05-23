@@ -39,7 +39,7 @@
                     <h5>Available Colors:</h5>
                     @foreach ($product->colors as $color)
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="color_id" id="color{{ $color->id }}" value="{{ $color->id }}" required>
+                            <input class="form-check-input" type="radio" name="color_id" id="color{{ $color->id }}" value="{{ $color->id }}">
                             <label class="form-check-label" for="color{{ $color->id }}">
                                 <span style="display:inline-block;width:20px;height:20px;background-color:{{ $color->hex_code }};border-radius:50%;border:1px solid #ccc;margin-right:5px;"></span>
                                 {{ $color->name }}
@@ -53,7 +53,7 @@
                     <h5>Available Sizes:</h5>
                     @foreach ($product->sizes as $size)
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="size_id" id="size{{ $size->id }}" value="{{ $size->id }}" required>
+                            <input class="form-check-input" type="radio" name="size_id" id="size{{ $size->id }}" value="{{ $size->id }}">
                             <label class="form-check-label" for="size{{ $size->id }}">
                                 {{ $size->name }}
                             </label>

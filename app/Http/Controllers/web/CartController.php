@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +31,14 @@ class CartController extends Controller
 
     public function add(Request $request, Product $product)
     {
+        \Log::info('Add to cart request:', [
+            'user_id' => Auth::id(),
+            'product_id' => $product->id,
+            'quantity' => $request->quantity,
+            'color_id' => $request->color_id,
+            'size_id' => $request->size_id
+        ]);
+
         $request->validate([
             'quantity' => 'required|integer|min:1|max:' . $product->quantity,
             'color_id' => 'nullable|exists:colors,id',
@@ -44,22 +53,23 @@ class CartController extends Controller
             ->first();
 
         if ($cartItem) {
-            // Update quantity if item exists
             $newQuantity = $cartItem->quantity + $request->quantity;
             if ($newQuantity > $product->quantity) {
                 return redirect()->back()->with('error', 'Not enough stock available.');
             }
             $cartItem->quantity = $newQuantity;
             $cartItem->save();
+            \Log::info('Updated existing cart item:', ['cart_item' => $cartItem->toArray()]);
         } else {
             // Create new cart item
-            Cart::create([
+            $newCartItem = Cart::create([
                 'user_id' => Auth::id(),
                 'product_id' => $product->id,
-                'color_id' => $request->color_id,
-                'size_id' => $request->size_id,
+                'color_id' => $request->color_id ?: null,
+                'size_id' => $request->size_id ?: null,
                 'quantity' => $request->quantity
             ]);
+            \Log::info('Created new cart item:', ['cart_item' => $newCartItem->toArray()]);
         }
 
         return redirect()->back()->with('success', 'Product added to cart successfully!');
@@ -129,14 +139,35 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
-        // Here you would typically:
-        // 1. Create an order
-        // 2. Process payment
-        // 3. Update inventory
-        // 4. Clear the cart
-        // 5. Send confirmation email
+        // Calculate total amount
+        $total = $cartItems->sum(function ($item) {
+            return $item->product->price * $item->quantity;
+        });
 
-        // For now, we'll just clear the cart
+        // Create the order
+        $order = Order::create([
+            'user_id' => Auth::id(),
+            'shipping_address' => $request->shipping_address,
+            'payment_method' => $request->payment_method,
+            'total_amount' => $total,
+            'status' => 'pending'
+        ]);
+
+        // Create order items
+        foreach ($cartItems as $item) {
+            $order->items()->create([
+                'product_id' => $item->product_id,
+                'color_id' => $item->color_id,
+                'size_id' => $item->size_id,
+                'quantity' => $item->quantity,
+                'price' => $item->product->price
+            ]);
+
+            // Update product quantity
+            $item->product->decrement('quantity', $item->quantity);
+        }
+
+        // Clear the cart
         Cart::where('user_id', Auth::id())->delete();
 
         return redirect()->route('checkout.success')->with('success', 'Order placed successfully!');
@@ -145,5 +176,53 @@ class CartController extends Controller
     public function checkoutSuccess()
     {
         return view('checkout.success');
+    }
+
+    public function orders()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->with(['items.product', 'items.color', 'items.size'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('orders.index', compact('orders'));
+    }
+
+    public function adminOrders()
+    {
+        $orders = Order::with(['user', 'items.product', 'items.color', 'items.size'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('orders.admin', compact('orders'));
+    }
+
+    public function updateStatus(Request $request, Order $order)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,processing,completed,cancelled'
+        ]);
+
+        $order->update([
+            'status' => $request->status
+        ]);
+
+        return redirect()->back()->with('success', 'Order status updated successfully');
+    }
+
+    public function buyNow(Product $product)
+    {
+        // Clear the cart first
+        Cart::where('user_id', Auth::id())->delete();
+        
+        // Add the product to cart with quantity 1
+        Cart::create([
+            'user_id' => Auth::id(),
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+        
+        // Redirect to cart page
+        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
     }
 } 

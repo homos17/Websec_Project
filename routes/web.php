@@ -75,22 +75,14 @@ Route::middleware(['auth:web'])->group(function () {
     // Checkout routes
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout.index');
     Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
+    Route::post('/checkout/buy-now/{product}', [CartController::class, 'buyNow'])->name('checkout.buy-now');
     Route::get('/checkout/success', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
+    
+    // Orders route
+    Route::get('/orders', [CartController::class, 'orders'])->name('orders.index');
+    Route::get('/admin/orders', [CartController::class, 'adminOrders'])->name('orders.admin');
+    Route::patch('/orders/{order}/update-status', [CartController::class, 'updateStatus'])->name('orders.update-status');
 });
 
-Route::middleware(['auth:web'])->group(function () {
-    Route::get('/support', [App\Http\Controllers\Web\SupportTicketController::class, 'list'])->name('support.list');
-    Route::get('/support/add', [App\Http\Controllers\Web\SupportTicketController::class, 'add'])->name('support.add');
-    Route::post('/support', [App\Http\Controllers\Web\SupportTicketController::class, 'store'])->name('support.store');
-    Route::get('/support/{ticket}', [App\Http\Controllers\Web\SupportTicketController::class, 'show'])->name('support.show');
-});
-
-// Admin Support Ticket Routes
-Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/support', [App\Http\Controllers\Admin\AdminSupportTicketController::class, 'index'])->name('support.index');
-    Route::get('/support/{ticket}', [App\Http\Controllers\Admin\AdminSupportTicketController::class, 'show'])->name('support.show');
-    Route::post('/support/{ticket}/reply', [App\Http\Controllers\Admin\AdminSupportTicketController::class, 'reply'])->name('support.reply');
-    Route::post('/support/{ticket}/close', [App\Http\Controllers\Admin\AdminSupportTicketController::class, 'close'])->name('support.close');
-});
 
 

@@ -52,8 +52,10 @@
             <div class="card-body">
                 <h5 class="card-title">{{ $product->name }}</h5>
                 {{-- <p class="card-text">{{ $product->description }}</p> --}}
-                <p class="text-warning">${{ $product->price }}</p>
-                <a href="{{ route('products.details', $product->id) }}" class="btn btn-primary">View Details</a>
+                <p class="text-warning h4 mb-3">${{ $product->price }}</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ route('products.details', $product->id) }}" class="btn btn-outline-primary">View Details</a>
+                </div>
             </div>
         </div>
     </div>
@@ -62,4 +64,19 @@
     @endforelse
     </div>
 </div>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.btn {
+    transition: all 0.2s ease-in-out;
+}
+.btn:hover {
+    transform: translateY(-2px);
+}
+</style>
 @endsection

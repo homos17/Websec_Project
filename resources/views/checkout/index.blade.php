@@ -81,6 +81,11 @@
                                        class="form-check-input">
                                 <label class="form-check-label">PayPal</label>
                             </div>
+                            <div class="form-check">
+                                <input type="radio" name="payment_method" value="paypal" 
+                                       class="form-check-input">
+                                <label class="form-check-label">Cash on Delivery</label>
+                            </div>
                             @error('payment_method')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
