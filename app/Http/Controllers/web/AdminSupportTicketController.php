@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminSupportTicketController extends Controller{
-    public function index()
-    {
+
+    public function index(){
+        if (!auth()->user()->hasPermissionTo('Complaints'))
+            abort(401);
         $tickets = SupportTicket::with('user')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -17,13 +19,15 @@ class AdminSupportTicketController extends Controller{
         return view('admin.index', compact('tickets'));
     }
 
-    public function show(SupportTicket $ticket)
-    {
+    public function show(SupportTicket $ticket){
+        if (!auth()->user()->hasPermissionTo('Complaints'))
+            abort(401);
         return view('admin.show', compact('ticket'));
     }
 
-    public function reply(Request $request, SupportTicket $ticket)
-    {
+    public function reply(Request $request, SupportTicket $ticket){
+        if (!auth()->user()->hasPermissionTo('Complaints'))
+            abort(401);
         $request->validate([
             'admin_reply' => 'required|string'
         ]);
@@ -39,8 +43,9 @@ class AdminSupportTicketController extends Controller{
             ->with('success', 'Reply sent successfully!');
     }
 
-    public function close(SupportTicket $ticket)
-    {
+    public function close(SupportTicket $ticket){
+        if (!auth()->user()->hasPermissionTo('Complaints'))
+        abort(401);
         $ticket->update(['status' => 'done']);
         return redirect()->back()
             ->with('success', 'Complaint closed successfully!');

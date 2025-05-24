@@ -11,13 +11,9 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:web');
-    // }
 
-    public function index()
-    {
+    public function index(){
+        if (!auth()->user()) return redirect('login');
         $cartItems = Cart::where('user_id', Auth::id())
             ->with(['product', 'color', 'size'])
             ->get();
@@ -29,8 +25,8 @@ class CartController extends Controller
         return view('cart.index', compact('cartItems', 'total'));
     }
 
-    public function add(Request $request, Product $product)
-    {
+    public function add(Request $request, Product $product){
+        if (!auth()->user()) return redirect('login');
         \Log::info('Add to cart request:', [
             'user_id' => Auth::id(),
             'product_id' => $product->id,

@@ -7,10 +7,11 @@ use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CheckoutController extends Controller
-{
-    public function index()
-    {
+class CheckoutController extends Controller{
+
+
+    public function index(){
+        if (!auth()->user()) return redirect('login');
         $cartItems = Cart::where('user_id', Auth::id())
             ->with(['product', 'color', 'size'])
             ->get();
@@ -26,8 +27,8 @@ class CheckoutController extends Controller
         return view('checkout.index', compact('cartItems', 'total'));
     }
 
-    public function process(Request $request)
-    {
+    public function process(Request $request){
+        if (!auth()->user()) return redirect('login');
         $request->validate([
             'shipping_address' => 'required|string|max:255',
             'payment_method' => 'required|in:credit_card,paypal',
@@ -54,4 +55,4 @@ class CheckoutController extends Controller
     {
         return view('checkout.success');
     }
-} 
+}

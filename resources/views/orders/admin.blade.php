@@ -82,15 +82,24 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex align-items-center mb-3">
+                            @if ($order->user)
+                            <div class="avatar-circle-sm me-2">
+                                <span class="avatar-text-sm">{{ substr($order->user->name, 0, 1) }}</span>
+                            </div>
+                            <div>
+                                <div class="fw-medium">{{ $order->user->name }}</div>
+                                <small class="text-secondary">{{ $order->user->email }}</small>
+                            </div>
+                            @else
                                 <div class="avatar-circle-sm me-2">
-                                    <span class="avatar-text-sm">{{ substr($order->user->name, 0, 1) }}</span>
+                                    <span class="avatar-text-sm">?</span>
                                 </div>
                                 <div>
-                                    <div class="fw-medium">{{ $order->user->name }}</div>
-                                    <small class="text-secondary">{{ $order->user->email }}</small>
+                                    <div class="fw-medium text-danger">Unknown User</div>
+                                    <small class="text-secondary">N/A</small>
                                 </div>
-                            </div>
+                            @endif
+
 
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between mb-2">
@@ -124,8 +133,8 @@
                                 <div class="row mb-4">
                                     <div class="col-md-6">
                                         <h6 class="mb-2">Customer Information</h6>
-                                        <p class="mb-1"><strong>Name:</strong> {{ $order->user->name }}</p>
-                                        <p class="mb-1"><strong>Email:</strong> {{ $order->user->email }}</p>
+                                        <p class="mb-1"><strong>Name:</strong> {{ $order->user?->name ?? 'N/A' }}</p>
+                                        <p class="mb-1"><strong>Email:</strong> {{ $order->user?->email ?? 'N/A' }}</p>
                                         <p class="mb-0"><strong>Shipping Address:</strong> {{ $order->shipping_address }}</p>
                                     </div>
                                     <div class="col-md-6">

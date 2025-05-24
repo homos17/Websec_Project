@@ -10,17 +10,14 @@ use Illuminate\Support\Facades\Auth;
 class SupportTicketController extends Controller{
 
     public function show(SupportTicket $ticket){
-        if ($ticket->user_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Unauthorized access.');
-        }
-
+        if(!auth()->user()) return redirect('login');
         return view('support.show', compact('ticket'));
     }
 
     public function list(){
-        if(auth()->id()!=$user?->id) {
-            if(!auth()->user()->hasPermissionTo('Complaints')) abort(401);
-        }
+        if (!auth()->user()->hasPermissionTo('Complaints')) {
+        abort(401);
+    }
 
         $tickets = SupportTicket::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
@@ -30,9 +27,9 @@ class SupportTicketController extends Controller{
     }
 
     public function add(){
-        if(auth()->id()!=$user?->id) {
-            if(!auth()->user()->hasPermissionTo('add_Complaints')) abort(401);
-        }
+        if (!auth()->user()->hasPermissionTo('Complaints')) {
+        abort(401);
+    }
 
         return view('support.add');
     }

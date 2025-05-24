@@ -13,7 +13,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class ProductsController extends Controller{
     use ValidatesRequests;
-
     public function ___construct()
     {
         $this->middleware('auth:web')->except(['list', 'category', 'ListByCategory', 'productDetails']);
@@ -54,6 +53,7 @@ class ProductsController extends Controller{
 
     public function edit(Request $request, Product $product = null) {
         if(!auth()->user()) return redirect('login');
+
         $product = $product??new Product();
         $colors = Color::all();
         $sizes = Size::all();

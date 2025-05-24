@@ -23,7 +23,7 @@
                         <p class="text-center">No support tickets found.</p>
                     @else
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table table-dark table-striped table-bordered align-middle">
                                 <thead>
                                     <tr>
                                         <th>Subject</th>
@@ -34,7 +34,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
                                     @foreach($tickets as $ticket)
                                         <tr>
                                             <td>{{ $ticket->subject }}</td>

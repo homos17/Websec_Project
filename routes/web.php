@@ -79,6 +79,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/checkout/buy-now/{product}', [CartController::class, 'buyNow'])->name('checkout.buy-now');
     Route::get('/checkout/success', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
 
+
         // Orders route
     Route::get('/orders', [CartController::class, 'orders'])->name('orders.index');
     Route::get('/admin/orders', [CartController::class, 'adminOrders'])->name('orders.admin');
