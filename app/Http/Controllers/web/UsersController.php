@@ -173,13 +173,17 @@ class UsersController extends Controller
     }
 ############################################################################################################
 
-    public function list(Request $request){
+    public function list(Request $request) {
         if (!auth()->user()->hasPermissionTo('view_users'))
             abort(401);
 
         $query = User::select('*');
 
-        // Apply search filter
+        if (!auth()->user()->hasRole(['Admin', 'Manager'])) {
+            $query->whereDoesntHave('roles', function ($q) {
+                $q->whereIn('name', ['Admin', 'Manager']);
+            });
+        }
         $query->when($request->keywords, function($q) use ($request) {
             $q->where(function($query) use ($request) {
                 $query->where('name', 'like', "%{$request->keywords}%")
@@ -187,21 +191,19 @@ class UsersController extends Controller
             });
         });
 
-        // Apply role filter
         $query->when($request->role, function($q) use ($request) {
             $q->whereHas('roles', function($query) use ($request) {
                 $query->where('name', $request->role);
             });
         });
 
-        // Get paginated results
         $users = $query->paginate(10)->withQueryString();
 
-        // Get all roles for the filter dropdown
         $roles = Role::all();
 
         return view('users.list', compact('users', 'roles'));
-    }
+}
+
 
     public function createRoll(){
     $roles = Role::all();

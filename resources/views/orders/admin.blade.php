@@ -165,7 +165,7 @@
                                         <tbody>
                                             @foreach($order->items as $item)
                                                 <tr>
-                                                    <td>{{ $item->product->name }}</td>
+                                                    <td>{{ $item->product?->name ?? 'N/A' }}</td>
                                                     <td>{{ $item->color ? $item->color->name : 'N/A' }}</td>
                                                     <td>{{ $item->size ? $item->size->name : 'N/A' }}</td>
                                                     <td>{{ $item->quantity }}</td>
