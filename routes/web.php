@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\SocialAuthController;
 use App\Http\Controllers\Web\SupportTicketController;
@@ -10,6 +11,10 @@ use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
 
 Route::get('/', function () {
+    $email = emailFromLoginCertificate();
+    if($email && !auth()->user()) {
+        $user = User::where('email' , $email)->first();
+        if($user) Auth::login($user);}
     return view('welcome');
 });
 
