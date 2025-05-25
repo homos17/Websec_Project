@@ -8,13 +8,7 @@
             <h1 class="h3 mb-2 fw-bold">👥 Users Management</h1>
             <p class="text-info mb-0">Manage your system users and their permissions</p>
         </div>
-        <div class="d-flex gap-3">
-            @can('create_users')
-            <a href="{{ route('users_create') }}" class="btn btn-success px-4">
-                <i class="fas fa-plus me-2"></i> Add New User
-            </a>
-            @endcan
-        </div>
+        
     </div>
 
     <!-- Search and Filter Section -->

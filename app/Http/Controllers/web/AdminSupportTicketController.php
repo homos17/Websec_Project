@@ -12,6 +12,7 @@ class AdminSupportTicketController extends Controller{
     public function index(){
         if (!auth()->user()->hasPermissionTo('Complaints'))
             abort(401);
+
         $tickets = SupportTicket::with('user')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -22,12 +23,20 @@ class AdminSupportTicketController extends Controller{
     public function show(SupportTicket $ticket){
         if (!auth()->user()->hasPermissionTo('Complaints'))
             abort(401);
+
+
+
         return view('admin.show', compact('ticket'));
     }
 
     public function reply(Request $request, SupportTicket $ticket){
         if (!auth()->user()->hasPermissionTo('Complaints'))
             abort(401);
+
+        if ($ticket->status === 'done') {
+            return redirect()->back()->with('error', 'Cannot reply to a closed ticket.');
+        }
+
         $request->validate([
             'admin_reply' => 'required|string'
         ]);
@@ -38,15 +47,16 @@ class AdminSupportTicketController extends Controller{
             'status' => 'in_progress'
         ]);
 
-
         return redirect()->back()
             ->with('success', 'Reply sent successfully!');
     }
 
     public function close(SupportTicket $ticket){
         if (!auth()->user()->hasPermissionTo('Complaints'))
-        abort(401);
+            abort(401);
+
         $ticket->update(['status' => 'done']);
+
         return redirect()->back()
             ->with('success', 'Complaint closed successfully!');
     }

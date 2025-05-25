@@ -102,7 +102,7 @@ class CartController extends Controller
         Cart::where('user_id', Auth::id())->delete();
         return redirect()->back()->with('success', 'Cart cleared successfully!');
     }
-
+###################################################################################################
     public function checkout()
     {
         $cartItems = Cart::where('user_id', Auth::id())
@@ -121,7 +121,7 @@ class CartController extends Controller
     }
 
     public function processCheckout(Request $request)
-    {
+{
         $request->validate([
             'shipping_address' => 'required|string|max:255',
             'payment_method' => 'required|in:credit_card,paypal',
@@ -133,6 +133,13 @@ class CartController extends Controller
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
+        }
+
+        // تحقق من الكمية المتاحة
+        foreach ($cartItems as $item) {
+            if ($item->quantity > $item->product->quantity) {
+                return redirect()->route('cart.index')->with('error', 'Insufficient stock for product: ' . $item->product->name);
+            }
         }
 
         // Calculate total amount
@@ -169,57 +176,41 @@ class CartController extends Controller
         return redirect()->route('checkout.success')->with('success', 'Order placed successfully!');
     }
 
-    public function checkoutSuccess()
-    {
-        return view('checkout.success');
-    }
-############################################################################################################################
+####################################################################################
 
-    public function orders()
-    {
-        $orders = Order::where('user_id', Auth::id())
-            ->with(['items.product', 'items.color', 'items.size'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+public function orders()
+{
+    $orders = Order::where('user_id', Auth::id())
+        ->with(['items.product', 'items.color', 'items.size'])
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        return view('orders.index', compact('orders'));
-    }
-
-    public function adminOrders()
-    {
-        $orders = Order::with(['user', 'items.product', 'items.color', 'items.size'])
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('orders.admin', compact('orders'));
-    }
-
-    public function updateStatus(Request $request, Order $order)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,processing,completed,cancelled'
-        ]);
-
-        $order->update([
-            'status' => $request->status
-        ]);
-
-        return redirect()->back()->with('success', 'Order status updated successfully');
-    }
-
-    public function buyNow(Product $product)
-    {
-        // Clear the cart first
-        Cart::where('user_id', Auth::id())->delete();
-
-        // Add the product to cart with quantity 1
-        Cart::create([
-            'user_id' => Auth::id(),
-            'product_id' => $product->id,
-            'quantity' => 1
-        ]);
-
-        // Redirect to cart page
-        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
-    }
+    return view('orders.index', compact('orders'));
 }
+
+public function adminOrders()
+{
+    if (!auth()->user()->hasPermissionTo('manage_orders')) abort(401);
+
+    $orders = Order::with(['user', 'items.product', 'items.color', 'items.size'])
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('orders.admin', compact('orders'));
+}
+
+public function updateStatus(Request $request, Order $order)
+{
+    if (!auth()->user()->hasPermissionTo('manage_orders')) abort(401);
+
+    $request->validate([
+        'status' => 'required|in:pending,processing,completed,cancelled'
+    ]);
+
+    $order->update([
+        'status' => $request->status
+    ]);
+
+    return redirect()->back()->with('success', 'Order status updated successfully');
+}
+

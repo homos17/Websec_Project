@@ -173,36 +173,38 @@ class UsersController extends Controller
     }
 ############################################################################################################
 
-    public function list(Request $request) {
-        if (!auth()->user()->hasPermissionTo('view_users'))
-            abort(401);
+public function list(Request $request)
+{
+    if (!auth()->user()->hasPermissionTo('view_users'))
+        abort(401);
 
-        $query = User::select('*');
+    $query = User::select('*');
 
-        if (!auth()->user()->hasRole(['Admin', 'Manager'])) {
-            $query->whereDoesntHave('roles', function ($q) {
-                $q->whereIn('name', ['Admin', 'Manager']);
-            });
-        }
-        $query->when($request->keywords, function($q) use ($request) {
-            $q->where(function($query) use ($request) {
-                $query->where('name', 'like', "%{$request->keywords}%")
-                    ->orWhere('email', 'like', "%{$request->keywords}%");
-            });
+    if (auth()->user()->hasRole('Manager')) {
+        $query->whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'Admin');
         });
+    }
 
-        $query->when($request->role, function($q) use ($request) {
-            $q->whereHas('roles', function($query) use ($request) {
-                $query->where('name', $request->role);
-            });
+    $query->when($request->keywords, function($q) use ($request) {
+        $q->where(function($query) use ($request) {
+            $query->where('name', 'like', "%{$request->keywords}%")
+                  ->orWhere('email', 'like', "%{$request->keywords}%");
         });
+    });
 
-        $users = $query->paginate(10)->withQueryString();
+    $query->when($request->role, function($q) use ($request) {
+        $q->whereHas('roles', function($query) use ($request) {
+            $query->where('name', $request->role);
+        });
+    });
 
-        $roles = Role::all();
+    $users = $query->paginate(10)->withQueryString();
+    $roles = Role::all();
 
-        return view('users.list', compact('users', 'roles'));
+    return view('users.list', compact('users', 'roles'));
 }
+
 
 
     public function createRoll(){
@@ -255,11 +257,12 @@ class UsersController extends Controller
             'email' => $request->email,
             'address' => $request->address,
         ]);
-
-        if (auth()->user()->hasRole('Admin')) {
+        
+        if (auth()->user()->hasAnyRole(['Admin', 'Manager'])) {
             $user->syncRoles($request->roles);
             $user->syncPermissions($request->permissions);
         }
+
 
         return redirect()->route('profile', ['user' => $user->id])->with('success', 'Profile updated successfully.');
     }
@@ -271,7 +274,7 @@ class UsersController extends Controller
 
         return redirect()->route('users.list')->with('success', 'User deleted successfully.');
     }
-
+##########################################################################################
     public function editPassword(Request $request, User $user = null){
         $user = $user ?? auth()->user();
         if (auth()->id() != $user?->id) {
